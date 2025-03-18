@@ -5,46 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>puck dress up</title>
   <style>
+    @font-face {
+      font-family: "rainyhearts";
+      src: url("rainyhearts.ttf") format("truetype");
+    }
     body {
-      font-family: 'Helvetica Neue', sans-serif;
+      font-family: "rainyhearts";
+      text-align: center;
+      color: #FFF;
+      font-size: 18px;
       margin: 0;
       padding: 20px;
-      background: #f0f0f0;
-      text-align: center;
+      background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
       box-sizing: border-box;
     }
-    
     #progress-wrapper {
       width: 320px;
       margin: 0 auto 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #sound-container {
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #play-pause-btn {
+      width: 80%;
+      height: 80%;
+      padding: 10px;
+      box-sizing: border-box;
+      object-fit: contain;
+      cursor: pointer;
+    }
+    #progress-details {
+      flex-grow: 1;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
     #counter {
       font-weight: bold;
-      margin-bottom: 5px;
+      text-align: center;
     }
     #progress-bar {
       width: 100%;
       height: 20px;
-      appearance: none;
-    }
-    #progress-bar::-webkit-progress-bar {
-      background-color: #eee;
+      background-color: rgba(255,255,255,0.2);
       border-radius: 10px;
+      overflow: hidden;
     }
-    #progress-bar::-webkit-progress-value {
-      background-color: #4caf50;
+    #progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #9147FF;
       border-radius: 10px;
+      transition: width 0.5s ease;
     }
-    
     #main-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 18px;
       margin: 0 auto;
-      padding: 0 40px; 
+      padding: 0 36px;
       align-items: start;
     }
-    
     @media (max-width: 768px) {
       #main-container {
         grid-template-columns: 1fr;
@@ -53,53 +92,49 @@
         display: none;
       }
     }
-    
     #twitch-embed {
-      width: 100%;
-      max-width: calc(500px * (16/9));
-      height: 500px;
-      border: 1px solid #999;
-      background-color: #000;
+      width: 800px;
+      height: 450px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background-color: rgba(0,0,0,0.5);
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
       margin: 0 auto;
     }
-    
     #game-section {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    
     #game-container {
       display: flex;
       justify-content: center;
       align-items: flex-start;
       flex-wrap: nowrap;
       overflow-x: auto;
-      width: 100%;
-      max-width: 1111px; /* 180 (left) + 751 (center) + 180 (right) */
-      margin: 0 auto 20px;
+      width: 1000px;
+      margin: 0 auto 18px;
     }
-    
     .side-panel {
-      border: 1px solid #ddd;
-      background: #fff;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
       padding: 10px;
-      width: 180px;
-      height: 500px;
+      width: 162px;
+      height: 450px;
       overflow-y: auto;
       box-sizing: border-box;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
     }
     .side-panel h3 {
       font-size: 1em;
       margin: 5px 0;
-      color: #333;
+      color: #fff;
     }
-    
-    .accessory, .placed-accessory {
+    .accessory,
+    .placed-accessory {
       cursor: pointer;
       user-select: none;
     }
@@ -111,27 +146,25 @@
     .placed-accessory {
       position: absolute;
     }
-    
     #center-panel {
       position: relative;
-      border: 1px solid #ddd;
-      width: 751px;
-      height: 500px; 
-      margin: 0 auto 20px;
-      background-color: #fff;
+      width: 676px;
+      height: 450px;
+      margin: 0 auto 18px;
+      background: url('backdrop.png') no-repeat center/cover, rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
       overflow: hidden;
     }
- 
     #active-area {
       position: relative;
-      width: 751px;
-      height: 358px;
-      margin: 71px auto 0; /* (500 - 358)/2 = 71px top margin */
+      width: 676px;
+      height: 322px;
+      margin: 64px auto 0;
       overflow: hidden;
-      background-color: #fff;
+      background: rgba(255,255,255,0.05);
     }
     #base-image {
       position: absolute;
@@ -144,291 +177,266 @@
       pointer-events: none;
       user-select: none;
     }
-    
-    /* Controls styling */
-    #controls {
-      margin: 10px 0;
+    #center-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
     }
-    #controls button {
+    #center-controls button {
+      font-family: "rainyhearts";
+      font-size: 16px;
       padding: 8px 16px;
-      margin: 0 5px;
       border: none;
       border-radius: 4px;
-      background-color: #4caf50;
+      background-color: #682c52;
       color: #fff;
       cursor: pointer;
-      font-size: 1em;
+      transition: background-color 0.3s ease;
     }
-    #controls button:hover {
-      background-color: #45a049;
+    #center-controls button:hover {
+      background-color: #3e162f;
     }
-    
+    #center-code {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
     #codeOutput {
-      width: 300px;
+      width: 270px;
       padding: 5px;
-      font-family: monospace;
-      border: 1px solid #ccc;
+      font-family: "rainyhearts";
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      backdrop-filter: blur(4px);
     }
   </style>
   <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 </head>
 <body>
-
-<div id="progress-wrapper">
-  <div id="counter">Accessories placed: 0/5</div>
-  <progress id="progress-bar" max="5" value="0"></progress>
-</div>
-
-<div id="main-container">
-  <div id="twitch-embed"></div>
-
-  <div id="game-section">
-    <div id="game-container">
-      <div id="left-panel" class="side-panel"></div>
-      
-      <!-- Center panel uses an active area for coordinate normalization -->
-      <div id="center-panel">
-        <div id="active-area">
-          <img id="base-image" src="puckTest.png" alt="puck" onerror="this.onerror=null; this.style.display='none'">
-        </div>
+  <div id="progress-wrapper">
+    <div id="sound-container">
+      <img id="play-pause-btn" src="play.png" alt="Play Sound">
+    </div>
+    <div id="progress-details">
+      <div id="counter">Accessories placed: 0/5</div>
+      <div id="progress-bar">
+        <div id="progress-fill"></div>
       </div>
-      
-      <div id="right-panel" class="side-panel"></div>
-    </div>
-    <div id="controls">
-      <button id="clear-btn">Clear</button>
-      <button id="reset-btn">Reset</button>
-    </div>
-    <div>
-      Code: <input type="text" id="codeOutput" readonly>
     </div>
   </div>
-</div>
-
-<script>
-  var options = {
-    width: Math.round(500 * (16/9)),
-    height: 500,
-    channel: "ononano",
-    parent: ["localhost"]
-  };
-  var player = new Twitch.Player("twitch-embed", options);
-  player.setVolume(0.5);
-
-  const MAX_ACCESSORIES = 5;
-  const activeArea = document.getElementById('active-area');
-  const leftPanel = document.getElementById('left-panel');
-  const rightPanel = document.getElementById('right-panel');
-  const counterEl = document.getElementById('counter');
-  const progressBar = document.getElementById('progress-bar');
-  const codeOutput = document.getElementById('codeOutput');
-  const clearBtn = document.getElementById('clear-btn');
-  const resetBtn = document.getElementById('reset-btn');
-  let placedItems = [];
-  let cloneCounter = 0;
-
-  function updateUI() {
-    counterEl.textContent = `Accessories placed: ${placedItems.length}/${MAX_ACCESSORIES}`;
-    progressBar.value = placedItems.length;
-    generateCode();
-  }
-  
-  let currentDrag = null, dragType = null, dragOrigin = null;
-  let offsetX = 0, offsetY = 0;
-  
-  document.addEventListener("mousemove", function(e) {
-    if (currentDrag) {
-      currentDrag.style.left = (e.clientX - offsetX) + "px";
-      currentDrag.style.top = (e.clientY - offsetY) + "px";
-      
-      let activeRect = activeArea.getBoundingClientRect();
-      if (e.clientX >= activeRect.left && e.clientX <= activeRect.right &&
-          e.clientY >= activeRect.top && e.clientY <= activeRect.bottom) {
-        currentDrag.style.transform = "scale(2)";
+  <div id="main-container">
+    <div id="twitch-embed"></div>
+    <div id="game-section">
+      <div id="game-container">
+        <div id="left-panel" class="side-panel"></div>
+        <div id="center-panel">
+          <div id="active-area">
+            <img id="base-image" src="puckTest.png" alt="puck" onerror="this.onerror=null;this.style.display='none'">
+          </div>
+          <div id="center-controls">
+            <button id="clear-btn">Clear</button>
+          </div>
+          <div id="center-code">
+            Code: <input type="text" id="codeOutput" readonly>
+          </div>
+        </div>
+        <div id="right-panel" class="side-panel"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var options = { width: 800, height: 450, channel: "ononano", parent: ["localhost"] };
+    var player = new Twitch.Player("twitch-embed", options);
+    player.setVolume(0.5);
+    var audio = new Audio('donkeykonga.mp3');
+    var isPlaying = false;
+    var playPauseBtn = document.getElementById('play-pause-btn');
+    playPauseBtn.addEventListener('click', function(){
+      if(!isPlaying){
+        audio.play();
+        isPlaying = true;
+        playPauseBtn.src = "pause.png";
       } else {
-        currentDrag.style.transform = "scale(1)";
+        audio.pause();
+        isPlaying = false;
+        playPauseBtn.src = "play.png";
       }
+    });
+    const MAX_ACCESSORIES = 5;
+    const activeArea = document.getElementById('active-area');
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const counterEl = document.getElementById('counter');
+    const codeOutput = document.getElementById('codeOutput');
+    const clearBtn = document.getElementById('clear-btn');
+    let placedItems = [];
+    let cloneCounter = 0;
+    function updateUI(){
+      counterEl.textContent = `Accessories placed: ${placedItems.length}/${MAX_ACCESSORIES}`;
+      const percentage = (placedItems.length / MAX_ACCESSORIES) * 100;
+      document.getElementById('progress-fill').style.width = percentage + '%';
+      generateCode();
     }
-  });
-  
-  document.addEventListener("mouseup", function(e) {
-    if (currentDrag) {
-      let activeRect = activeArea.getBoundingClientRect();
-      if (e.clientX >= activeRect.left && e.clientX <= activeRect.right &&
-          e.clientY >= activeRect.top && e.clientY <= activeRect.bottom) {
-        let dropX = e.clientX - activeRect.left - offsetX;
-        let dropY = e.clientY - activeRect.top - offsetY;
-        if (dragType === "new") {
-          placeNewAccessoryCustom(currentDrag.getAttribute("data-id"), dropX, dropY);
-        } else if (dragType === "move" && dragOrigin) {
-          dragOrigin.style.left = dropX + "px";
-          dragOrigin.style.top = dropY + "px";
-          placedItems.forEach(item => {
-            if (item.uid === dragOrigin.id) {
-              item.x = dropX;
-              item.y = dropY;
-            }
-          });
-          updateUI();
+    let currentDrag = null, dragType = null, dragOrigin = null;
+    let offsetX = 0, offsetY = 0;
+    document.addEventListener("mousemove", function(e){
+      if(currentDrag){
+        currentDrag.style.left = (e.clientX - offsetX) + "px";
+        currentDrag.style.top = (e.clientY - offsetY) + "px";
+        let activeRect = activeArea.getBoundingClientRect();
+        if(e.clientX >= activeRect.left && e.clientX <= activeRect.right &&
+           e.clientY >= activeRect.top && e.clientY <= activeRect.bottom){
+          currentDrag.style.transform = "scale(1.75)";
+        } else {
+          currentDrag.style.transform = "scale(1)";
         }
       }
-      document.body.removeChild(currentDrag);
-      currentDrag = null;
-      dragType = null;
-      dragOrigin = null;
-    }
-  });
-  
-  function attachAccessoryDrag(element) {
-    element.style.userSelect = "none";
-    element.addEventListener("mousedown", function(e) {
-      e.preventDefault();
-      if (e.button !== 0) return;
-      currentDrag = element.cloneNode(true);
-      currentDrag.style.position = "fixed";
-      currentDrag.style.opacity = "0.3";
-      currentDrag.style.pointerEvents = "none";
-      currentDrag.style.zIndex = "1000";
-      document.body.appendChild(currentDrag);
-      dragType = "new";
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
     });
-    element.addEventListener("contextmenu", e => e.preventDefault());
-  }
-  
-  function placeNewAccessoryCustom(typeId, dropX, dropY) {
-    if (placedItems.length >= MAX_ACCESSORIES) return;
-    const original = document.querySelector(`.accessory[data-id="${typeId}"]`);
-    if (!original) return;
-    const clone = original.cloneNode(true);
-    cloneCounter++;
-    const uid = 'item' + cloneCounter;
-    clone.dataset.cloneId = uid;
-    clone.id = uid;
-    clone.classList.add('placed-accessory');
-    clone.style.position = 'absolute';
-    clone.style.left = dropX + 'px';
-    clone.style.top = dropY + 'px';
-    // Set final scale to 2.
-    clone.style.transform = "scale(2)";
-    clone.removeAttribute('draggable');
-    activeArea.appendChild(clone);
-    clone.addEventListener("mousedown", function(e) {
-      e.preventDefault();
-      if (e.button !== 0) return;
-      dragOrigin = clone;
-      currentDrag = clone.cloneNode(true);
-      currentDrag.style.position = "fixed";
-      currentDrag.style.opacity = "0.3";
-      currentDrag.style.pointerEvents = "none";
-      currentDrag.style.zIndex = "1000";
-      document.body.appendChild(currentDrag);
-      dragType = "move";
-      let rect = clone.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-    });
-    clone.addEventListener("contextmenu", e => e.preventDefault());
-    placedItems.push({
-      type: parseInt(typeId, 10), 
-      x: dropX,
-      y: dropY,
-      uid: uid
-    });
-    updateUI();
-  }
-  
-  function loadAccessories() {
-    fetch('accessories.json')
-      .then(response => response.json())
-      .then(data => {
-        const total = data.length;
-        const half = Math.ceil(total / 2);
-        data.forEach((acc, index) => {
-          const img = document.createElement('img');
-          img.className = 'accessory';
-          img.setAttribute('data-id', acc.id);
-          img.src = acc.src;
-          img.alt = acc.alt;
-          img.onerror = function() {
-            const div = document.createElement('div');
-            div.className = 'accessory';
-            div.setAttribute('data-id', acc.id);
-            div.textContent = acc.alt;
-            this.replaceWith(div);
-            attachAccessoryDrag(div);
-          };
-          attachAccessoryDrag(img);
-          if (index < half) {
-            leftPanel.appendChild(img);
-          } else {
-            rightPanel.appendChild(img);
+    document.addEventListener("mouseup", function(e){
+      if(currentDrag){
+        let activeRect = activeArea.getBoundingClientRect();
+        if(e.clientX >= activeRect.left && e.clientX <= activeRect.right &&
+           e.clientY >= activeRect.top && e.clientY <= activeRect.bottom){
+          let dropX = e.clientX - activeRect.left - offsetX;
+          let dropY = e.clientY - activeRect.top - offsetY;
+          if(dragType === "new"){
+            placeNewAccessoryCustom(currentDrag.getAttribute("data-id"), dropX, dropY);
+          } else if(dragType === "move" && dragOrigin){
+            dragOrigin.style.left = dropX + "px";
+            dragOrigin.style.top = dropY + "px";
+            placedItems.forEach(item => { if(item.uid === dragOrigin.id){ item.x = dropX; item.y = dropY; } });
+            updateUI();
           }
-        });
-      })
-      .catch(err => { console.error('Error loading accessories:', err); });
-  }
-  
-  function clearAllAccessories() {
-    const clones = activeArea.querySelectorAll('.placed-accessory');
-    clones.forEach(elem => activeArea.removeChild(elem));
-    placedItems = [];
-    updateUI();
-  }
-  
-  clearBtn.addEventListener('click', clearAllAccessories);
-  resetBtn.addEventListener('click', clearAllAccessories);
-  
-  function generateCode() {
-  const buffer = new Uint8Array(21);
-  let bytePos = 0;
-  
-  function writeByte(value) {
-    buffer[bytePos++] = value & 0xFF;
-  }
-  
-  function write32BitsLE(value) {
-    writeByte(value & 0xFF);             
-    writeByte((value >> 8) & 0xFF);
-    writeByte((value >> 16) & 0xFF);
-    writeByte((value >> 24) & 0xFF);      
-  }
-  
-
-  writeByte(placedItems.length);
-  
-  for (let i = 0; i < MAX_ACCESSORIES; i++) {
-    if (i < placedItems.length) {
-      const acc = placedItems[i];
-      const objectId = acc.type;  
-      const normX = Math.round((acc.x / activeArea.clientWidth) * 99);
-      const normY = Math.round((acc.y / activeArea.clientHeight) * 99);
-      const accessoryValue = objectId * 10000 + normX * 100 + normY;
-      write32BitsLE(accessoryValue);
-    } else {
-      write32BitsLE(0);
+        }
+        document.body.removeChild(currentDrag);
+        currentDrag = null;
+        dragType = null;
+        dragOrigin = null;
+      }
+    });
+    function attachAccessoryDrag(element){
+      element.style.userSelect = "none";
+      element.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        if(e.button !== 0) return;
+        currentDrag = element.cloneNode(true);
+        currentDrag.style.position = "fixed";
+        currentDrag.style.opacity = "0.3";
+        currentDrag.style.pointerEvents = "none";
+        currentDrag.style.zIndex = "1000";
+        document.body.appendChild(currentDrag);
+        dragType = "new";
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
+      element.addEventListener("contextmenu", e => e.preventDefault());
     }
-  }
-  
-
-  let binaryStr = '';
-  for (let i = 0; i < buffer.length; i++) {
-    binaryStr += String.fromCharCode(buffer[i]);
-  }
-  
-  const base64Code = btoa(binaryStr);
-  codeOutput.value = base64Code;
-}
-
-
-  
-  updateUI();
-  loadAccessories();
-  
-</script>
-
-
+    function placeNewAccessoryCustom(typeId, dropX, dropY){
+      if(placedItems.length >= MAX_ACCESSORIES) return;
+      const original = document.querySelector(`.accessory[data-id="${typeId}"]`);
+      if(!original) return;
+      const clone = original.cloneNode(true);
+      cloneCounter++;
+      const uid = 'item' + cloneCounter;
+      clone.dataset.cloneId = uid;
+      clone.id = uid;
+      clone.classList.add('placed-accessory');
+      clone.style.position = 'absolute';
+      clone.style.left = dropX + 'px';
+      clone.style.top = dropY + 'px';
+      clone.style.transform = "scale(1.75)";
+      clone.removeAttribute('draggable');
+      activeArea.appendChild(clone);
+      clone.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        if(e.button !== 0) return;
+        dragOrigin = clone;
+        currentDrag = clone.cloneNode(true);
+        currentDrag.style.position = "fixed";
+        currentDrag.style.opacity = "0.3";
+        currentDrag.style.pointerEvents = "none";
+        currentDrag.style.zIndex = "1000";
+        document.body.appendChild(currentDrag);
+        dragType = "move";
+        let rect = clone.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+      });
+      clone.addEventListener("contextmenu", e => e.preventDefault());
+      placedItems.push({ type: parseInt(typeId,10), x: dropX, y: dropY, uid: uid });
+      updateUI();
+    }
+    function loadAccessories(){
+      fetch('accessories.json')
+        .then(response => response.json())
+        .then(data => {
+          const total = data.length;
+          const half = Math.ceil(total/2);
+          data.forEach((acc,index)=>{
+            const img = document.createElement('img');
+            img.className = 'accessory';
+            img.setAttribute('data-id', acc.id);
+            img.src = acc.src;
+            img.alt = acc.alt;
+            img.onerror = function(){
+              const div = document.createElement('div');
+              div.className = 'accessory';
+              div.setAttribute('data-id', acc.id);
+              div.textContent = acc.alt;
+              this.replaceWith(div);
+              attachAccessoryDrag(div);
+            };
+            attachAccessoryDrag(img);
+            if(index < half){
+              leftPanel.appendChild(img);
+            } else {
+              rightPanel.appendChild(img);
+            }
+          });
+        })
+        .catch(err => { console.error('Error loading accessories:',err); });
+    }
+    function clearAllAccessories(){
+      const clones = activeArea.querySelectorAll('.placed-accessory');
+      clones.forEach(elem => activeArea.removeChild(elem));
+      placedItems = [];
+      updateUI();
+    }
+    clearBtn.addEventListener('click', clearAllAccessories);
+    function generateCode(){
+      const buffer = new Uint8Array(21);
+      let bytePos = 0;
+      function writeByte(value){ buffer[bytePos++] = value & 0xFF; }
+      function write32BitsLE(value){
+        writeByte(value & 0xFF);
+        writeByte((value >> 8) & 0xFF);
+        writeByte((value >> 16) & 0xFF);
+        writeByte((value >> 24) & 0xFF);
+      }
+      writeByte(placedItems.length);
+      for(let i = 0; i < MAX_ACCESSORIES; i++){
+        if(i < placedItems.length){
+          const acc = placedItems[i];
+          const objectId = acc.type;
+          const normX = Math.round((acc.x / activeArea.clientWidth) * 99);
+          const normY = Math.round((acc.y / activeArea.clientHeight) * 99);
+          const accessoryValue = objectId * 10000 + normX * 100 + normY;
+          write32BitsLE(accessoryValue);
+        } else {
+          write32BitsLE(0);
+        }
+      }
+      let binaryStr = '';
+      for(let i = 0; i < buffer.length; i++){
+        binaryStr += String.fromCharCode(buffer[i]);
+      }
+      const base64Code = btoa(binaryStr);
+      codeOutput.value = base64Code;
+    }
+    updateUI();
+    loadAccessories();
+  </script>
 </body>
 </html>
